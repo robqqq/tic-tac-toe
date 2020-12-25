@@ -7,26 +7,33 @@ namespace tic_tac_toe
         public static void Main(string[] args)
         {
             Field field = new Field();
-            int i;
-            int j;
+            int i = 0;
+            int j = 0;
             string input = "";
             while (field.Winner() == Player.EMPTY && !field.IsFull())
             {
                 field.Print();
                 Console.WriteLine("Player " + field.GetPlayer() + " is moving.");
                 Console.WriteLine("Specify the row number and column number from 0 to 2 separated by a space:");
+                bool error;
                 do
                 {
+                    error = false;
                     input = Console.ReadLine();
-                    if (!Int32.TryParse(input.Substring(0, 1), out i) |
-                        !Int32.TryParse(input.Substring(2, 1), out j))
+                    if (input.Length < 3)
+                    {
+                        Console.WriteLine("Too short line");
+                        error = true;
+                    } else if (!Int32.TryParse(input.Substring(0, 1), out i) |
+                          !Int32.TryParse(input.Substring(2, 1), out j))
                     {
                         Console.WriteLine("Invalid character");
-                        continue;
+                        error = true;
                     }
-                } while (i < 0 || i > 2 || j < 0 || j > 2 || !field.IsEmpty(i,j));
+                } while (error || i < 0 || i > 2 || j < 0 || j > 2 || !field.IsEmpty(i,j));
                 field.MakeMove(i,j);
             }
+            field.Print();
             switch (field.Winner())
             {
                 case Player.EMPTY:
@@ -39,6 +46,7 @@ namespace tic_tac_toe
                     Console.WriteLine("Congratulations, winner is player O");
                     break;
             }
+            Console.ReadLine();
         }
     }
 }
